@@ -1,0 +1,44 @@
+<form (submit)="onAddPost(postForm)" #postForm="ngForm">
+  <mat-accordion class="accordion-headers-align">
+    <mat-expansion-panel [expanded]="step === 0">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Personal data
+        </mat-panel-title>
+        <mat-panel-description>
+          Type your personal details
+          <mat-icon>account_circle</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+        <mat-form-field>
+          <input matInput type="text" name="name" ngModel placeholder="First name" required #Name="ngModel">
+          <mat-error *ngIf="Name.invalid">Please enter your name</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="number" name="age" ngModel min="13" max="95" placeholder="Age">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="email" name="email" ngModel placeholder="Email" required #Email="ngModel">
+          <mat-error *ngIf="Email.invalid">Please enter your valid email</mat-error>
+        </mat-form-field>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+
+
+  <mat-card>
+      <mat-form-field>
+        <input matInput type="text" name="title" ngModel placeholder="Enter title here" required #Title="ngModel">
+        <mat-error *ngIf="Title.invalid">Please enter the title of the post</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <textarea matInput rows="3" name="content" ngModel placeholder="Enter content here" required #Content="ngModel"></textarea>
+        <mat-error *ngIf="Content.invalid">Please enter some content</mat-error>
+      </mat-form-field>
+      <button mat-raised-button type="submit" color="primary">Save Post</button>
+      <button mat-raised-button type="reset" color="warn" style="float: right;">Clear</button>
+  </mat-card>
+</form>
+
