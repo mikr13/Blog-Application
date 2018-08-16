@@ -18,10 +18,21 @@ export class CreatePostComponent implements OnInit {
   enteredEmail = '';
   enteredTitle = '';
   enteredContent = '';
+  text = '';
 
   constructor(public postService: PostsService) {}
 
   ngOnInit() {
+  }
+
+  makeid() {
+    this.text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < 5; i++) {
+      this.text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return this.text;
   }
 
   onAddPost(form: NgForm) {
@@ -30,6 +41,7 @@ export class CreatePostComponent implements OnInit {
     }
 
     const post: Post = {
+      id: this.makeid(),
       name: form.value.name,
       age: parseInt(form.value.age, 10),
       email: form.value.email,
