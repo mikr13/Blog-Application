@@ -7,15 +7,27 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const expressValidator = require('express-validator');
 const session = require('express-session');
+const mongoose = require('mongoose');
 
 const app = express();
+
+var uri = "mongodb://127.0.0.1:27017/mean-blog";
+mongoose.connect(uri , {useNewUrlParser: true})
+  .then(() => {
+    console.log('Connected to database!');
+  })
+  .catch((err) => {
+    console.log(`Connection failed with error: ${err}`);
+  });
+
+const Post = require('./models/posts.model');
 
 /*
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'pug');
-
 */
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -66,36 +78,42 @@ app.use((req, res, next) => {
 });
 
 app.post('/api/posts', (req, res, next) => {
-  const post = req.body;
-  console.log(post);
-  res.status(201).json({
-    message: 'Post added successfully!'
+  const post = new Post({
+    name: req.body.name,
+    age: req.body.age,
+    email: req.body.email,
+    title: req.body.title,
+    content: req.body.content
+  });
+  post.save().then((result) => {
+      res.status(201).json({
+        message: 'Post added successfully!',
+        id: resule._id
+      });
   });
 });
 
+
 app.get('/api/posts', (req, res, next) => {
-  const posts = [{
-      name: 'Mihir Kumar',
-      age: '21',
-      email: 'mihir.kumar13ayu@gmail.com',
-      id: 'fb1sh12dwu',
-      title: 'Passion for Ayushee',
-      content: 'I love her!!!'
-    },
-    {
-      name: 'Ayushee',
-      age: '21',
-      email: 'ayusheegupta.04@gmail.com',
-      id: 'jb1ah17dcv',
-      title: 'Passion for Mihir',
-      content: 'I love him!!!'
-    }
-  ];
-  res.status(200).json({
-    message: "Posts fetched succesfully!",
-    posts: posts
+  var query = Post.find();
+  var promise = query.exec();
+  promise.then((q_posts) => {
+    res.status(200).json({
+      message: "Posts fetched succesfully!",
+      posts: q_posts
+    });
   });
-  //next();
+});
+
+app.delete('/api/posts/:id', (req, res, next) => {
+  var id= req.params.id;
+  var query = Post.deleteOne({_id: req.params.id});
+  var promise = query.exec();
+  promise.then(() => {
+    res.status(201).json({
+      message: `Post with id: ${id} deleted successfully!`
+    });
+  });
 });
 
 /*

@@ -25,6 +25,7 @@ export class CreatePostComponent implements OnInit {
   ngOnInit() {
   }
 
+/*
   makeid() {
     this.text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -34,14 +35,14 @@ export class CreatePostComponent implements OnInit {
     }
     return this.text;
   }
+*/
 
   onAddPost(form: NgForm) {
     if (form.invalid) {
       return;
     }
 
-    const post: Post = {
-      id: this.makeid(),
+    const post = {
       name: form.value.name,
       age: parseInt(form.value.age, 10),
       email: form.value.email,

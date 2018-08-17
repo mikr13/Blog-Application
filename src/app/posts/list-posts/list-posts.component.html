@@ -4,13 +4,14 @@
       <mat-panel-title>
         {{post.title}}
         <span class="example-fill-remaining-space"></span>
-        {{post.name}}
+        Created by: {{post.name}}, {{post.age}}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <p>{{post.content}}</p>
+    <p style="font-size: 1.2rem;">{{post.content}}</p>
     <mat-action-row>
-    <button mat-button color="primary">Edit</button>
-    <button mat-button color="warn">Delete</button>
+      <span style="margin-top: 8px; font-size: small">Contact author at: {{post.email}}</span>
+      <button mat-button color="primary">Edit</button>
+      <button mat-button color="warn" (click)="onDelete(post.id)">Delete</button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
