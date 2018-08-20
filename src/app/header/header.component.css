@@ -1,3 +1,16 @@
+ul {
+  list-style: none;
+}
+
+li {
+  display: inline;
+  margin-right: 10px;
+}
+
+li a {
+  text-decoration: none;
+}
+
 mat-icon {
   padding: 0 14px;
   cursor: pointer !important;

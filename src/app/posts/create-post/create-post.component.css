@@ -22,3 +22,7 @@ mat-form-field, textarea {
   justify-content: space-between;
   align-items: center;
 }
+
+mat-spinner {
+  margin: auto;
+}

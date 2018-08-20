@@ -9,6 +9,9 @@ import { MatInputModule,
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing/app-routing.module';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppComponent } from './app.component';
 import { CreatePostComponent } from './posts/create-post/create-post.component';
@@ -34,7 +37,10 @@ import { PostsService } from './services/posts.service';
     MatToolbarModule,
     MatIconModule,
     MatExpansionModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   providers: [PostsService],
   bootstrap: [AppComponent]

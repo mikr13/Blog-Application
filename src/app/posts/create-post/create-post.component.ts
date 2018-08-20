@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
 import { Post } from '../../shared/posts.model';
@@ -12,17 +12,31 @@ import { PostsService } from '../../services/posts.service';
 })
 export class CreatePostComponent implements OnInit {
 
-  step = 1;
-  enteredName = '';
-  enteredAge = '';
-  enteredEmail = '';
-  enteredTitle = '';
-  enteredContent = '';
-  text = '';
 
-  constructor(public postService: PostsService) {}
+  // text = '';
+  private mode = 'create';
+  private postId: string;
+  protected post: Post;
+  isLoading = false;
+
+  constructor(public postService: PostsService, public route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      if (paramMap.has('postId')) {
+        this.mode = 'edit';
+        this.postId = paramMap.get('postId');
+        this.isLoading = true;
+        this.postService.getPost(this.postId)
+          .subscribe(postData => {
+            this.isLoading = false;
+            this.post = postData.post;
+          });
+      } else {
+        this.mode = 'create';
+        this.postId = null;
+      }
+    });
   }
 
 /*
@@ -37,20 +51,26 @@ export class CreatePostComponent implements OnInit {
   }
 */
 
-  onAddPost(form: NgForm) {
+  onSavePost(form: NgForm) {
     if (form.invalid) {
       return;
     }
 
+    this.isLoading = true;
+
     const post = {
       name: form.value.name,
-      age: parseInt(form.value.age, 10),
+      age: parseInt(form.value.age, 10) || null,
       email: form.value.email,
       title: form.value.title,
       content: form.value.content
     };
 
-    this.postService.addPost(post);
+    if (this.mode === 'create') {
+      this.postService.addPost(post);
+    } else {
+      this.postService.updatePost(this.postId, post);
+    }
   }
 
 }

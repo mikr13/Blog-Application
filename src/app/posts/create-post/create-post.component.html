@@ -1,4 +1,4 @@
-<form (submit)="onAddPost(postForm)" #postForm="ngForm">
+<form (submit)="onSavePost(postForm)" #postForm="ngForm" *ngIf="!isLoading">
   <mat-accordion class="accordion-headers-align">
     <mat-expansion-panel [expanded]="step === 0">
       <mat-expansion-panel-header>
@@ -11,16 +11,16 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
         <mat-form-field>
-          <input matInput type="text" name="name" ngModel placeholder="First name" required #Name="ngModel">
+          <input matInput type="text" name="name" [ngModel]='post?.name' placeholder="First name" required #Name="ngModel">
           <mat-error *ngIf="Name.invalid">Please enter your name</mat-error>
         </mat-form-field>
 
         <mat-form-field>
-          <input matInput type="number" name="age" ngModel min="13" max="95" placeholder="Age">
+          <input matInput type="number" name="age" [ngModel]='post?.age' min="13" max="95" placeholder="Age">
         </mat-form-field>
 
         <mat-form-field>
-          <input matInput type="email" name="email" ngModel placeholder="Email" required #Email="ngModel">
+          <input matInput type="email" name="email" [ngModel]="post?.email" placeholder="Email" required #Email="ngModel">
           <mat-error *ngIf="Email.invalid">Please enter your valid email</mat-error>
         </mat-form-field>
     </mat-expansion-panel>
@@ -30,11 +30,11 @@
 
   <mat-card>
       <mat-form-field>
-        <input matInput type="text" name="title" ngModel placeholder="Enter title here" required #Title="ngModel">
+        <input matInput type="text" name="title" [ngModel]="post?.title" placeholder="Enter title here" required #Title="ngModel">
         <mat-error *ngIf="Title.invalid">Please enter the title of the post</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <textarea matInput rows="3" name="content" ngModel placeholder="Enter content here" required #Content="ngModel"></textarea>
+        <textarea matInput rows="3" name="content" [ngModel]="post?.content" placeholder="Enter content here" required #Content="ngModel"></textarea>
         <mat-error *ngIf="Content.invalid">Please enter some content</mat-error>
       </mat-form-field>
       <button mat-raised-button type="submit" color="primary">Save Post</button>
@@ -42,3 +42,4 @@
   </mat-card>
 </form>
 
+<mat-spinner *ngIf="isLoading"></mat-spinner>

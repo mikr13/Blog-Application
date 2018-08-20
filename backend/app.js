@@ -20,7 +20,7 @@ mongoose.connect(uri , {useNewUrlParser: true})
     console.log(`Connection failed with error: ${err}`);
   });
 
-const Post = require('./models/posts.model');
+const postsRoutes = require('./routes/posts.routes');
 
 /*
 // view engine setup
@@ -44,6 +44,7 @@ app.use(session({
   saveUninitialized: true,
   resave: true
 }));
+*/
 
 //Express validator
 app.use(expressValidator({
@@ -62,7 +63,7 @@ app.use(expressValidator({
     };
   }
 }));
-*/
+
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -72,48 +73,9 @@ app.use((req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
   );
   next();
-});
-
-app.post('/api/posts', (req, res, next) => {
-  const post = new Post({
-    name: req.body.name,
-    age: req.body.age,
-    email: req.body.email,
-    title: req.body.title,
-    content: req.body.content
-  });
-  post.save().then((result) => {
-      res.status(201).json({
-        message: 'Post added successfully!',
-        id: resule._id
-      });
-  });
-});
-
-
-app.get('/api/posts', (req, res, next) => {
-  var query = Post.find();
-  var promise = query.exec();
-  promise.then((q_posts) => {
-    res.status(200).json({
-      message: "Posts fetched succesfully!",
-      posts: q_posts
-    });
-  });
-});
-
-app.delete('/api/posts/:id', (req, res, next) => {
-  var id= req.params.id;
-  var query = Post.deleteOne({_id: req.params.id});
-  var promise = query.exec();
-  promise.then(() => {
-    res.status(201).json({
-      message: `Post with id: ${id} deleted successfully!`
-    });
-  });
 });
 
 /*
@@ -133,7 +95,10 @@ app.use((err, req, res, next) => {
   res.json({
     error: err.message
   });
+  next();
 });
 */
+
+app.use('/api/posts', postsRoutes);
 
 module.exports = app;

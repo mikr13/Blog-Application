@@ -2,8 +2,12 @@
 
   <mat-toolbar-row>
     <span>Posts center</span>
+    <ul>
+      <li><a routerLink="/" mat-stroked-button>Posts List</a></li>
+    </ul>
     <span class="example-spacer"></span>
-    <mat-icon class="example-icon">favorite</mat-icon>
-    <mat-icon class="example-icon">delete</mat-icon>
+    <ul>
+      <li><a routerLink="/create" mat-stroked-button routerLinkActive="mat-accent">Create Post</a></li>
+    </ul>
   </mat-toolbar-row>
 </mat-toolbar>
