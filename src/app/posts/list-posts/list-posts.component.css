@@ -14,6 +14,24 @@
   flex: 1 1 auto;
 }
 
+.post-image {
+  width: 100%;
+}
+
+.post-image img {
+  height: 50%;
+  width: 50%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.29), 0 6px 20px 0 rgba(0, 0, 0, 0.28);
+}
+
+mat-paginator {
+  margin-top: 0.5rem;
+  background-color: rgb(35, 34, 34);
+  color: white  !important;
+}
+
 mat-spinner {
   margin: auto;
 }

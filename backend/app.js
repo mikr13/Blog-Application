@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
@@ -34,9 +33,10 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
 /*
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 //Express session
 app.use(session({

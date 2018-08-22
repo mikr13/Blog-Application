@@ -26,3 +26,20 @@ mat-form-field, textarea {
 mat-spinner {
   margin: auto;
 }
+
+input[type="file"] {
+  visibility: hidden;
+}
+
+.image-div {
+  margin: 0 0 20px 0;
+}
+
+.image-preview {
+  height: 15rem !important;
+  margin: 1rem 0;
+}
+
+.image-preview img {
+  height: 100%;
+}

@@ -1,9 +1,11 @@
 import { Component, OnInit} from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Post } from '../../shared/posts.model';
 import { PostsService } from '../../services/posts.service';
+
+import { mimeType } from '../../shared/mime-type.validator';
 
 @Component({
   selector: 'app-create-post',
@@ -16,12 +18,42 @@ export class CreatePostComponent implements OnInit {
   // text = '';
   private mode = 'create';
   private postId: string;
-  protected post: Post;
+  private post: Post;
   isLoading = false;
+  form: FormGroup;
+  protected imagePreview: string;
 
   constructor(public postService: PostsService, public route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.form = new FormGroup({
+      name: new FormControl(null, {validators: [
+        Validators.required,
+        Validators.minLength(3),
+        // tslint:disable-next-line:quotemark
+        Validators.pattern("^[a-zA-Z ]{3,30}$")
+      ]}),
+      email: new FormControl(null, {validators: [
+        Validators.required,
+        // tslint:disable-next-line:max-line-length quotemark
+        Validators.pattern("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+      ]}),
+      title: new FormControl(null, {validators: [
+        Validators.required,
+        // tslint:disable-next-line:quotemark
+        Validators.pattern("^[0-9a-zA-Z!.&:?@,\'\"() ]{3,60}$")
+      ]}),
+      content: new FormControl(null, {validators: [
+        Validators.required,
+        // tslint:disable-next-line:quotemark
+        Validators.pattern("^[0-9a-zA-Z!.&:?@,\'\"() ]{20,}$")
+      ]}),
+      image: new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType]
+      })
+    });
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
@@ -31,6 +63,13 @@ export class CreatePostComponent implements OnInit {
           .subscribe(postData => {
             this.isLoading = false;
             this.post = postData.post;
+            this.form.setValue({
+              name: this.post.name,
+              email: this.post.email,
+              title: this.post.title,
+              content: this.post.content,
+              image: this.post.imagePath
+            });
           });
       } else {
         this.mode = 'create';
@@ -51,21 +90,29 @@ export class CreatePostComponent implements OnInit {
   }
 */
 
-  onSavePost(form: NgForm) {
-    if (form.invalid) {
+  onImagePicker(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({image: file});
+    this.form.get('image').updateValueAndValidity();
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  onSavePost() {
+    if (this.form.invalid) {
       return;
     }
-
     this.isLoading = true;
-
     const post = {
-      name: form.value.name,
-      age: parseInt(form.value.age, 10) || null,
-      email: form.value.email,
-      title: form.value.title,
-      content: form.value.content
+      name: this.form.value.name,
+      email: this.form.value.email,
+      title: this.form.value.title,
+      content: this.form.value.content,
+      image: this.form.value.image
     };
-
     if (this.mode === 'create') {
       this.postService.addPost(post);
     } else {

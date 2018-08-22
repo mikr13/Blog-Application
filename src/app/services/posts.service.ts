@@ -24,11 +24,11 @@ export class PostsService {
         return postData.posts.map(post => {
           return {
             name: post.name,
-            age: post.age,
             email: post.email,
             id: post._id,
             title: post.title,
-            content: post.content
+            content: post.content,
+            imagePath: post.imagePath
           };
         });
       }))
@@ -47,35 +47,16 @@ export class PostsService {
     return this.http.get<{post: Post}>('http://localhost:3030/api/posts/' + id);
   }
 
-  updatePost(id: string, post: any) {
-    const postUpdated: Post = {
-      name: post.name,
-      age: post.age,
-      email: post.email,
-      id: id,
-      title: post.title,
-      content: post.content
-    };
-    this.http.put<{message: string}>('http://localhost:3030/api/posts/' + id, postUpdated)
-      .subscribe((response) => {
-        const updatedPosts = [...this.posts];
-        const oldPostIndex = updatedPosts.findIndex(p => p.id === post.id);
-        updatedPosts[oldPostIndex] = post;
-        this.posts = updatedPosts;
-        this.snackBar.open(response.message, 'Okay!', {
-          duration: 2500,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
-        });
-        this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['/']);
-    });
-  }
-
   addPost(post) {
-    this.http.post<{message: string, postId: string}>('http://localhost:3030/api/posts', post)
+    const postData = new FormData();
+    postData.append('name', post.name);
+    postData.append('email', post.email);
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', post.image, post.title);
+    this.http.post<{message: string, post: Post}>('http://localhost:3030/api/posts', postData)
       .subscribe((responseData) => {
-        const id = responseData.postId;
+        const id = responseData.post.id;
         post.id = id;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
@@ -84,6 +65,52 @@ export class PostsService {
           horizontalPosition: 'center',
           verticalPosition: 'top'
         });
+        this.router.navigate(['/']);
+    });
+  }
+
+  updatePost(id: string, post) {
+    let postData: Post | FormData;
+    if (typeof(post.image) === 'object') {
+      postData = new FormData();
+      postData.append('name', post.name);
+      postData.append('email', post.email);
+      postData.append('id', id);
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('image', post.image, post.title);
+    } else {
+      postData = {
+        name: post.name,
+        email: post.email,
+        id: id,
+        title: post.title,
+        content: post.content,
+        imagePath: post.imagePath
+      };
+    }
+    console.log(post.image);
+    console.log(post.imagePath);
+    this.http.put<{message: string}>('http://localhost:3030/api/posts/' + id, postData)
+      .subscribe((response) => {
+        const updatedPosts = [...this.posts];
+        const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
+        const post_new: Post = {
+          name: post.name,
+          email: post.email,
+          id: id,
+          title: post.title,
+          content: post.content,
+          imagePath: ''
+        };
+        updatedPosts[oldPostIndex] = post_new;
+        this.posts = updatedPosts;
+        this.snackBar.open(response.message, 'Okay!', {
+          duration: 2500,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+        this.postsUpdated.next([...this.posts]);
         this.router.navigate(['/']);
     });
   }

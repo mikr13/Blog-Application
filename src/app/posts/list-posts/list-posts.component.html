@@ -4,9 +4,12 @@
       <mat-panel-title>
         {{post.title}}
         <span class="example-fill-remaining-space"></span>
-        Created by: {{post.name}}, {{post.age}}
+        Created by: {{post.name}}
       </mat-panel-title>
     </mat-expansion-panel-header>
+    <div class="post-image">
+      <img [src]="post.imagePath" [alt]="post.title">
+    </div>
     <p style="font-size: 1.2rem;">{{post.content}}</p>
     <mat-action-row>
       <span style="margin-top: 8px; font-size: small">Contact author at: {{post.email}}</span>
@@ -19,5 +22,6 @@
 <mat-card *ngIf="!posts.length && !isLoading">
   <p class="info-text mat-body-1">No posts added as of yet!</p>
 </mat-card>
+<mat-paginator [length]="totalPosts" [pageSize]="postsPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
 
 <mat-spinner *ngIf="isLoading"></mat-spinner>

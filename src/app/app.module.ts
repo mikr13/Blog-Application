@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule,
         MatCardModule,
@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 import { AppComponent } from './app.component';
 import { CreatePostComponent } from './posts/create-post/create-post.component';
@@ -29,7 +30,7 @@ import { PostsService } from './services/posts.service';
   ],
   imports: [
     BrowserModule,
-    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MatInputModule,
     MatCardModule,
@@ -40,7 +41,8 @@ import { PostsService } from './services/posts.service';
     HttpClientModule,
     AppRoutingModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatPaginatorModule
   ],
   providers: [PostsService],
   bootstrap: [AppComponent]
