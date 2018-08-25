@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
-import { PageEvent } from '@angular/material';
+import { PageEvent, MatSnackBar } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { Post } from '../../shared/posts.model';
 
+import { Post } from '../../shared/posts.model';
 import { PostsService } from '../../services/posts.service';
 
 @Component({
@@ -13,30 +13,43 @@ import { PostsService } from '../../services/posts.service';
 export class ListPostsComponent implements OnInit, OnDestroy {
 
   posts: Post[] = [];
-  private postSub: Subscription;
   isLoading = false;
-  totalPosts = 10;
-  postsPerPage = 5;
-  pageSizeOptions = [1, 2, 5, 10];
+  pageSizeOptions: number[] = [1, 2, 5, 10];
+  private postSub: Subscription;
 
-  constructor(public postsService: PostsService) { }
+  constructor(public postsService: PostsService, public snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.isLoading = true;
-    this.posts = this.postsService.getPosts() || [];
+    this.postsService.getPosts(this.postsService.postsPerPage, this.postsService.currentPage);
     this.postSub = this.postsService.getPostUpdateListener()
-      .subscribe((posts: Post[]) => {
+      .subscribe((postData: {posts: Post[], postCount: number}) => {
         this.isLoading = false;
-        this.posts = posts;
+        this.postsService.totalPosts = postData.postCount;
+        this.posts = postData.posts;
       });
   }
 
   onPageChange(pageData: PageEvent) {
-    console.log(pageData);
+    this.isLoading = true;
+    this.postsService.currentPage = pageData.pageIndex + 1;
+    this.postsService.postsPerPage = pageData.pageSize;
+    this.postsService.getPosts(this.postsService.postsPerPage, this.postsService.currentPage);
   }
 
   onDelete(id: string) {
-    this.postsService.deletePost(id);
+    this.isLoading = true;
+    this.postsService.deletePost(id).subscribe((responsemsg) => {
+      if (this.postsService.totalPosts - 1 === this.postsService.postsPerPage * (this.postsService.currentPage - 1)) {
+        this.postsService.currentPage = 1;
+      }
+      this.postsService.getPosts(this.postsService.postsPerPage, this.postsService.currentPage);
+      this.snackBar.open(responsemsg.message, 'Okay!', {
+        duration: 2500,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+    });
   }
 
   ngOnDestroy() {

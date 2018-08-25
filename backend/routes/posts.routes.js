@@ -31,18 +31,23 @@ const upload = multer({ storage: storage });
 
 
 router.get('/', (req, res, next) => {
-    const pageSize = +req.query.pS; // + converts to int
+    const pageSize = +req.query.ps; // + converts to int
     const currentPage = +req.query.p;
-    var query = Post.find();
+    const query = Post.find();
+    let fetchedPosts;
     if(pageSize && currentPage) {
-        query.skip(pageSize * (currentPage - 1))
-            .limit(pageSize);
+        query.skip(pageSize * (currentPage - 1)).limit(pageSize);
     }
     var promise = query.exec();
     promise.then((q_posts) => {
+        fetchedPosts = q_posts;
+        return Post.count();
+    })
+    .then((count) => {
         res.status(200).json({
             message: "Posts fetched succesfully!",
-            posts: q_posts
+            posts: fetchedPosts,
+            postCounts: count
         });
     });
 });

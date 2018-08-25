@@ -22,6 +22,6 @@
 <mat-card *ngIf="!posts.length && !isLoading">
   <p class="info-text mat-body-1">No posts added as of yet!</p>
 </mat-card>
-<mat-paginator [length]="totalPosts" [pageSize]="postsPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
+<mat-paginator *ngIf="posts.length" [pageIndex]="postsService.currentPage - 1" [pageSize]="postsService.postsPerPage" [length]="postsService.totalPosts" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
 
 <mat-spinner *ngIf="isLoading"></mat-spinner>

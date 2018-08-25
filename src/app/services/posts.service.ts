@@ -14,14 +14,18 @@ import { Post } from '../shared/posts.model';
 export class PostsService {
 
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private postsUpdated = new Subject<{posts: Post[], postCount: number}>();
+  totalPosts = 0;
+  postsPerPage = 2;
+  currentPage = 1;
 
   constructor(private http: HttpClient, public snackBar: MatSnackBar, private router: Router) { }
 
-  getPosts() {
-    this.http.get<{message: string, posts: any}>('http://localhost:3030/api/posts')
+  getPosts(postsPerPage: number, currentPage: number) {
+    const queryParams = `?ps=${postsPerPage}&p=${currentPage}`;
+    this.http.get<{message: string, posts: any, postCount: number}>('http://localhost:3030/api/posts' + queryParams)
       .pipe(map((postData) => {
-        return postData.posts.map(post => {
+        return {posts: postData.posts.map((post) => {
           return {
             name: post.name,
             email: post.email,
@@ -30,12 +34,12 @@ export class PostsService {
             content: post.content,
             imagePath: post.imagePath
           };
-        });
+        }), postCount: postData.postCount};
       }))
-      .subscribe((posts) => {
+      .subscribe((transformedPostData) => {
         // the same posts that came after map
-        this.posts = posts;
-        this.postsUpdated.next([...this.posts]);
+        this.posts = transformedPostData.posts;
+        this.postsUpdated.next({posts: [...this.posts], postCount: transformedPostData.postCount});
     });
   }
 
@@ -56,10 +60,13 @@ export class PostsService {
     postData.append('image', post.image, post.title);
     this.http.post<{message: string, post: Post}>('http://localhost:3030/api/posts', postData)
       .subscribe((responseData) => {
+        /*
         const id = responseData.post.id;
         post.id = id;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
+        */
+
         this.snackBar.open(responseData.message, 'Okay!', {
           duration: 2500,
           horizontalPosition: 'center',
@@ -93,6 +100,7 @@ export class PostsService {
     console.log(post.imagePath);
     this.http.put<{message: string}>('http://localhost:3030/api/posts/' + id, postData)
       .subscribe((response) => {
+        /*
         const updatedPosts = [...this.posts];
         const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
         const post_new: Post = {
@@ -105,19 +113,21 @@ export class PostsService {
         };
         updatedPosts[oldPostIndex] = post_new;
         this.posts = updatedPosts;
+        this.postsUpdated.next([...this.posts]);
+        */
+
         this.snackBar.open(response.message, 'Okay!', {
           duration: 2500,
           horizontalPosition: 'center',
           verticalPosition: 'top'
         });
-        this.postsUpdated.next([...this.posts]);
         this.router.navigate(['/']);
     });
   }
 
   deletePost(id: string) {
-    this.http.delete<{message: string}>('http://localhost:3030/api/posts/' + id)
-      .subscribe((responsemsg) => {
+    return this.http.delete<{message: string}>('http://localhost:3030/api/posts/' + id);
+      /*.subscribe((responsemsg) => {
         const updatedPosts = this.posts.filter(post => post.id !== id);
         this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts]);
@@ -127,6 +137,6 @@ export class PostsService {
           horizontalPosition: 'center',
           verticalPosition: 'top'
         });
-    });
+    }); */
   }
 }
