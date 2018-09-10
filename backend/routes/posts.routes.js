@@ -3,6 +3,7 @@ const multer = require('multer');
 const fs = require('fs');
 
 const Post = require('../models/posts.model');
+const checkAuth = require('../middleware/authenticate-token');
 
 const router = express.Router();
 
@@ -66,7 +67,7 @@ router.get('/:id', (req, res, next) => {
     })
 });
 
-router.post('/', upload.single('image'), (req, res, next) => {
+router.post('/', checkAuth, upload.single('image'), (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
     const post = new Post({
         name: req.body.name,
@@ -86,7 +87,7 @@ router.post('/', upload.single('image'), (req, res, next) => {
     });
 });
 
-router.put('/:id', upload.single('image'), (req, res, next) => {
+router.put('/:id', checkAuth, upload.single('image'), (req, res, next) => {
     var imagePathnew = '';
     if(req.file) {
         Post.findById(req.params.id, (err, post) => {
@@ -117,7 +118,7 @@ router.put('/:id', upload.single('image'), (req, res, next) => {
     });
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
     var imagePath;
     Post.findById(req.params.id, (err, post) => {
         imagePath = post.imagePath;

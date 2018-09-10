@@ -19,3 +19,16 @@ mat-icon {
 .example-spacer {
   flex: 1 1 auto;
 }
+
+.avatar {
+  padding: 0px;
+  border-radius: 50%;
+  display: inline;
+}
+
+.avatar img {
+  padding: 0px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { Post } from '../../shared/posts.model';
 import { PostsService } from '../../services/posts.service';
+import { UsersService } from './../../services/users.service';
 
 @Component({
   selector: 'app-list-posts',
@@ -14,10 +15,13 @@ export class ListPostsComponent implements OnInit, OnDestroy {
 
   posts: Post[] = [];
   isLoading = false;
-  pageSizeOptions: number[] = [1, 2, 5, 10];
   private postSub: Subscription;
 
-  constructor(public postsService: PostsService, public snackBar: MatSnackBar) {}
+  private authListenerSubs: Subscription;
+  userAuthenticated = false;
+  userData = null;
+
+  constructor(public postsService: PostsService, public snackBar: MatSnackBar, private userService: UsersService) { }
 
   ngOnInit() {
     this.isLoading = true;
@@ -28,6 +32,13 @@ export class ListPostsComponent implements OnInit, OnDestroy {
         this.postsService.totalPosts = postData.postCount;
         this.posts = postData.posts;
       });
+    this.userAuthenticated = this.userService.getIsUserAuthenticated();
+    this.authListenerSubs = this.userService.getAuthStatusListener().subscribe(status => {
+      this.userAuthenticated = status;
+      if (this.userAuthenticated) {
+        this.userData = this.userService.getUser();
+      }
+    });
   }
 
   onPageChange(pageData: PageEvent) {
@@ -54,5 +65,6 @@ export class ListPostsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.postSub.unsubscribe();
+    this.authListenerSubs.unsubscribe();
   }
 }

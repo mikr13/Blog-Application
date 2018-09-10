@@ -40,3 +40,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# custom
+/backend/users-image
+/backend/uploads
+/backend/config/secret.js

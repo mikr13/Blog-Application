@@ -18,12 +18,13 @@ export class PostsService {
   totalPosts = 0;
   postsPerPage = 2;
   currentPage = 1;
+  pageSizeOptions: number[] = [1, 2, 5, 10];
 
   constructor(private http: HttpClient, public snackBar: MatSnackBar, private router: Router) { }
 
   getPosts(postsPerPage: number, currentPage: number) {
     const queryParams = `?ps=${postsPerPage}&p=${currentPage}`;
-    this.http.get<{message: string, posts: any, postCount: number}>('http://localhost:3030/api/posts' + queryParams)
+    this.http.get<{message: string, posts: any, postCounts: number}>('http://localhost:3030/api/posts' + queryParams)
       .pipe(map((postData) => {
         return {posts: postData.posts.map((post) => {
           return {
@@ -34,7 +35,7 @@ export class PostsService {
             content: post.content,
             imagePath: post.imagePath
           };
-        }), postCount: postData.postCount};
+        }), postCount: postData.postCounts};
       }))
       .subscribe((transformedPostData) => {
         // the same posts that came after map
@@ -60,13 +61,6 @@ export class PostsService {
     postData.append('image', post.image, post.title);
     this.http.post<{message: string, post: Post}>('http://localhost:3030/api/posts', postData)
       .subscribe((responseData) => {
-        /*
-        const id = responseData.post.id;
-        post.id = id;
-        this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
-        */
-
         this.snackBar.open(responseData.message, 'Okay!', {
           duration: 2500,
           horizontalPosition: 'center',
@@ -96,25 +90,8 @@ export class PostsService {
         imagePath: post.imagePath
       };
     }
-    console.log(post.image);
-    console.log(post.imagePath);
     this.http.put<{message: string}>('http://localhost:3030/api/posts/' + id, postData)
       .subscribe((response) => {
-        /*
-        const updatedPosts = [...this.posts];
-        const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
-        const post_new: Post = {
-          name: post.name,
-          email: post.email,
-          id: id,
-          title: post.title,
-          content: post.content,
-          imagePath: ''
-        };
-        updatedPosts[oldPostIndex] = post_new;
-        this.posts = updatedPosts;
-        this.postsUpdated.next([...this.posts]);
-        */
 
         this.snackBar.open(response.message, 'Okay!', {
           duration: 2500,
@@ -127,16 +104,5 @@ export class PostsService {
 
   deletePost(id: string) {
     return this.http.delete<{message: string}>('http://localhost:3030/api/posts/' + id);
-      /*.subscribe((responsemsg) => {
-        const updatedPosts = this.posts.filter(post => post.id !== id);
-        this.posts = updatedPosts;
-        this.postsUpdated.next([...this.posts]);
-        console.log(responsemsg.message);
-        this.snackBar.open(responsemsg.message, 'Okay!', {
-          duration: 2500,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
-        });
-    }); */
   }
 }

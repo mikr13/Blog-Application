@@ -1,13 +1,37 @@
 <mat-toolbar color="primary">
 
   <mat-toolbar-row>
-    <span>Posts center</span>
+    <span>Blogs</span>
     <ul>
-      <li><a routerLink="/" mat-stroked-button>Posts List</a></li>
+      <li>
+        <a routerLink="/" mat-stroked-button>All posts</a>
+      </li>
+      <li *ngIf='userAuthenticated'>
+        <a routerLink="/create" mat-stroked-button routerLinkActive="mat-accent">Create Post</a>
+      </li>
+      <!--li *ngIf='!userAuthenticated'>
+        <span>Login to create posts!</span>
+      </li-->
     </ul>
+
     <span class="example-spacer"></span>
+
     <ul>
-      <li><a routerLink="/create" mat-stroked-button routerLinkActive="mat-accent">Create Post</a></li>
+      <li *ngIf='!userAuthenticated'>
+        <a routerLink="/login" mat-stroked-button routerLinkActive="mat-accent">Login</a>
+      </li>
+      <li *ngIf='!userAuthenticated'>
+        <a routerLink="/signup" mat-stroked-button routerLinkActive="mat-accent">Signup</a>
+      </li>
+      <!--li class="avatar" *ngIf='userAuthenticated'>
+        <div class="avatar">
+          <img mat-list-avatar src="{{userData.imagePath}}" alt={{userData.name}}>
+        </div>
+      </li-->
+      <li *ngIf='userAuthenticated'>
+        <button mat-button (click)="onLogout()">Logout</button>
+      </li>
     </ul>
   </mat-toolbar-row>
+
 </mat-toolbar>

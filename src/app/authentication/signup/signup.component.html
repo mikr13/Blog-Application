@@ -1,0 +1,78 @@
+<form [formGroup]="form" (submit)="onSaveUser()" *ngIf="!isLoading">
+
+  <mat-accordion class="accordion-headers-align">
+    <mat-expansion-panel [expanded]="1">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Personal data</mat-panel-title>
+        <mat-panel-description>Type your personal details</mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-form-field>
+        <input matInput type="text" formControlName="name" placeholder="Name" required>
+        <mat-error *ngIf="form.get('name').invalid">Please enter your name</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="date" formControlName="dob" placeholder="DD/MM/YYYY" required>
+        <mat-error *ngIf="form.get('dob').invalid">Please enter your valid date of birth in form of DD/MM/YYYY</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="email" formControlName="email" placeholder="Email" required>
+        <mat-error *ngIf="form.get('email').invalid">Please enter your valid email</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="password" formControlName="password" placeholder="Password" autocomplete="off" required>
+        <mat-error *ngIf="form?.value.password !== form?.value.cpassword || form.get('password').invalid">Password must have 8 min characters containing atleast 1 numeric, 1 uppercase character, 1 lowercase character and 1 special character</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="password" formControlName="cpassword"  placeholder="Confirm password" required>
+        <mat-error *ngIf="form?.value.password !== form?.value.cpassword || form.get('cpassword').invalid">Passwords are not similar, please rectify!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="tel" formControlName="phone" placeholder="Phone number" required>
+        <mat-error *ngIf="form.get('phone').invalid">Please enter your valid phone number</mat-error>
+      </mat-form-field>
+
+      <div class="image-div">
+        <button mat-stroked-button type="button" (click)="filePicker.click()">Select a cool photo of yours</button>
+        <input type="file" #filePicker (change)="onImagePicker($event)">
+        <mat-error *ngIf="form.get('image').invalid && imagePreview !== '' && imagePreview">Not a valid image file!</mat-error>
+      </div>
+      <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
+        <img [src]="imagePreview" [alt]="form.value.name">
+      </div>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+
+
+  <mat-accordion class="accordion-headers-align">
+    <mat-expansion-panel [expanded]="">
+      <mat-expansion-panel-header>
+        <mat-panel-title>A few more details</mat-panel-title>
+        <mat-panel-description>Type your cool details</mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-form-field>
+        <input matInput type="text" formControlName="tagline" placeholder="Enter your awesome tag line here" required>
+        <mat-error *ngIf="form.get('tagline').invalid">Please enter the title of the post (3 characters minimum)</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <textarea matInput rows="4" formControlName="content" placeholder="Describe yourself here" required></textarea>
+        <mat-error *ngIf="form.get('content').invalid">Please enter some cool description of yourself (100 characters minimum)</mat-error>
+      </mat-form-field>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <button mat-raised-button type="submit" color="primary" [disabled]="form.invalid">Sign up</button>
+  <button mat-raised-button type="reset" color="warn" style="float: right;">Clear</button>
+
+</form>
+
+<mat-spinner *ngIf="isLoading"></mat-spinner>

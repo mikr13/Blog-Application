@@ -6,12 +6,13 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const expressValidator = require('express-validator');
 const session = require('express-session');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 
 const app = express();
 
-var uri = "mongodb://127.0.0.1:27017/mean-blog";
-mongoose.connect(uri , {useNewUrlParser: true})
+const mongoose_uri = require('./config/secret');
+
+mongoose.connect(mongoose_uri.uri , {useNewUrlParser: true})
   .then(() => {
     console.log('Connected to database!');
   })
@@ -20,12 +21,7 @@ mongoose.connect(uri , {useNewUrlParser: true})
   });
 
 const postsRoutes = require('./routes/posts.routes');
-
-/*
-// view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'pug');
-*/
+const usersRoutes = require('./routes/users.routes');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -34,6 +30,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/users-image', express.static(path.join(__dirname, '/users-image')));
 
 /*
 app.use(cookieParser());
@@ -69,7 +66,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -78,27 +75,7 @@ app.use((req, res, next) => {
   next();
 });
 
-/*
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
-
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.json({
-    error: err.message
-  });
-  next();
-});
-*/
-
 app.use('/api/posts', postsRoutes);
+app.use('/api/users', usersRoutes);
 
 module.exports = app;

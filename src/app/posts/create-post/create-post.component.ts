@@ -1,9 +1,10 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Post } from '../../shared/posts.model';
 import { PostsService } from '../../services/posts.service';
+import { UsersService } from '../../services/users.service';
 
 import { mimeType } from '../../shared/mime-type.validator';
 
@@ -14,8 +15,6 @@ import { mimeType } from '../../shared/mime-type.validator';
 })
 export class CreatePostComponent implements OnInit {
 
-
-  // text = '';
   private mode = 'create';
   private postId: string;
   private post: Post;
@@ -23,7 +22,7 @@ export class CreatePostComponent implements OnInit {
   form: FormGroup;
   protected imagePreview: string;
 
-  constructor(public postService: PostsService, public route: ActivatedRoute) {}
+  constructor(public postService: PostsService, public route: ActivatedRoute) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -46,7 +45,7 @@ export class CreatePostComponent implements OnInit {
       content: new FormControl(null, {validators: [
         Validators.required,
         // tslint:disable-next-line:quotemark
-        Validators.pattern("^[0-9a-zA-Z!.&:?@,\'\"() ]{20,}$")
+        Validators.pattern("^[0-9a-zA-Z!.&:?@,\'\"() ]{300,}$")
       ]}),
       image: new FormControl(null, {
         validators: [Validators.required],
@@ -96,7 +95,7 @@ export class CreatePostComponent implements OnInit {
     this.form.get('image').updateValueAndValidity();
     const reader = new FileReader();
     reader.onload = () => {
-      this.imagePreview = reader.result;
+      this.imagePreview = <string>reader.result;
     };
     reader.readAsDataURL(file);
   }
