@@ -67,7 +67,7 @@ router.post('/signup', upload.single('image'), (req, res, next) => {
             });
             user.save().then((result) => {
                 return res.status(201).json({
-                    message: 'User registered successfully!',
+                    message: 'User registered successfully, sign in to continue.',
                     user: user
                 });
             }).catch(err => {
@@ -95,7 +95,7 @@ router.post('/login', (req, res, next) => {
     User.findOne({ email: req.body.email }).then(user => {
         if(!user) {
             return res.status(401).json({
-                message: "Authentication failed.\nUser doesn't exists!"
+                message: "Authentication failed. User doesn't exists!"
             });
         }
         userData = user;
@@ -103,15 +103,15 @@ router.post('/login', (req, res, next) => {
     }).then(result => {
         if(!result) {
             return res.status(401).json({
-                message: "Authentication failed.\nCheck email or password or their combination"
-            })
+                message: "Authentication failed. Check email or password or their combination"
+            });
         }
-        const token = jwt.sign({email: userData.email, userId: userData._id, phone: userData.phone}, string_sec, { expiresIn: '3h' });
+        const token = jwt.sign({email: userData.email, userID: userData._id, phone: userData.phone}, string_sec, { expiresIn: '3h' });
         res.status(200).json({
-            user: {name: userData.name, email: userData.email, phone: userData.phone, id: userData._id, imagePath: userData.imagePath, tagline: userData.tagline, content: userData.content},
+            user: {name: userData.name, email: userData.email, userID: userData._id, imagePath: userData.imagePath},
             token: token,
             expiresIn: 10800,
-            message: "Logged in successfully"
+            message: "Logged in successfully."
         })
     }).catch(err => {
         return res.status(503).json({

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+import { Subscription } from 'rxjs';
+
 import { Post } from '../../shared/posts.model';
 import { PostsService } from '../../services/posts.service';
 import { UsersService } from '../../services/users.service';
@@ -21,10 +23,12 @@ export class CreatePostComponent implements OnInit {
   isLoading = false;
   form: FormGroup;
   protected imagePreview: string;
+  private userData = null;
 
-  constructor(public postService: PostsService, public route: ActivatedRoute) { }
+  constructor(public postService: PostsService, public route: ActivatedRoute, private userService: UsersService) { }
 
   ngOnInit() {
+
     this.form = new FormGroup({
       name: new FormControl(null, {validators: [
         Validators.required,
@@ -73,6 +77,16 @@ export class CreatePostComponent implements OnInit {
       } else {
         this.mode = 'create';
         this.postId = null;
+        this.userData = this.userService.getUser();
+        if (this.userData) {
+          this.form.setValue({
+            name: this.userData.name,
+            email: this.userData.email,
+            title: '',
+            content: '',
+            image: ''
+          });
+        }
       }
     });
   }
@@ -106,8 +120,8 @@ export class CreatePostComponent implements OnInit {
     }
     this.isLoading = true;
     const post = {
-      name: this.form.value.name,
-      email: this.form.value.email,
+      name: this.userData.name,
+      email: this.userData.email,
       title: this.form.value.title,
       content: this.form.value.content,
       image: this.form.value.image

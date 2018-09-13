@@ -7,18 +7,18 @@
           Personal data
         </mat-panel-title>
         <mat-panel-description>
-          Type your personal details
+          Your personal details as visible to others
           <mat-icon>account_circle</mat-icon>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
       <mat-form-field>
-        <input matInput type="text" formControlName="name" placeholder="Name">
+        <input matInput type="text" formControlName="name" placeholder="Name" readonly>
         <mat-error *ngIf="form.get('name').invalid">Please enter your name</mat-error>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput type="email" formControlName="email" placeholder="Email">
+        <input matInput type="email" formControlName="email" placeholder="Email" readonly>
         <mat-error *ngIf="form.get('email').invalid">Please enter your valid email</mat-error>
       </mat-form-field>
     </mat-expansion-panel>

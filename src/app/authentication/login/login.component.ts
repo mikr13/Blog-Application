@@ -1,19 +1,28 @@
-import { UsersService } from './../../services/users.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
+
+import { Subscription } from 'rxjs';
+
+import { UsersService } from './../../services/users.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   isLoading = false;
+  private authListenerSubs: Subscription;
 
-  constructor(public usersService: UsersService) { }
+  constructor(public userService: UsersService) { }
 
   ngOnInit() {
+    this.authListenerSubs = this.userService.getAuthStatusListener().subscribe(status => {
+      if (!status) {
+        this.isLoading = false;
+      }
+    });
   }
 
   onLogin(form: NgForm) {
@@ -21,7 +30,11 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.usersService.login(form.value.email, form.value.password);
+    this.userService.login(form.value.email, form.value.password);
+  }
+
+  ngOnDestroy() {
+    this.authListenerSubs.unsubscribe();
   }
 
 }

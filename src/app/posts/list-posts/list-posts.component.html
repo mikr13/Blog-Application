@@ -11,13 +11,15 @@
       <img [src]="post.imagePath" [alt]="post.title">
     </div>
     <p style="font-size: 1.2rem;">{{post.content}}</p>
-    <mat-action-row *ngIf='userAuthenticated'>
-      <span style="margin-top: 8px; font-size: small">Contact author at: {{post.email}}</span>
+    <mat-action-row *ngIf='userAuthenticated && userID === post.creatorID'>
       <a mat-button color="primary" [routerLink]="['/edit', post.id]">Edit</a>
       <button mat-button color="warn" (click)="onDelete(post.id)">Delete</button>
     </mat-action-row>
+    <mat-action-row *ngIf='userAuthenticated && userID !== post.creatorID'>
+      <span style="margin-top: 8px; font-size: small">Contact author at: {{post.email}}</span>
+    </mat-action-row>
     <mat-action-row *ngIf='!userAuthenticated'>
-      <span style="margin-top: 8px; font-size: small">Login to create posts!</span>
+      <span style="margin: 8px 8px 0 0; font-size: small">Login to create posts:</span>
       <a mat-button color="primary" routerLink="/login">Go to login</a>
     </mat-action-row>
   </mat-expansion-panel>

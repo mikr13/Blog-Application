@@ -5,7 +5,9 @@ const token_sec = require('../config/secret');
 module.exports = (req, res, next) => {
     try {
     const token = req.headers.authorization.split(' ')[1];
-    jwt.verify(token, token_sec.string_sec);
+    const decodedToken = jwt.verify(token, token_sec.string_sec);
+    // adding decodedToken to request to be accessed in post.routes.js
+    req.userData = {email: decodedToken.email, userID: decodedToken.userID, phone: decodedToken.phone}
     next();
     } catch(error) {
         res.status(401).json({

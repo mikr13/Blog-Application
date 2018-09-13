@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+
+import { Subscription } from 'rxjs';
 
 import { UsersService } from '../../services/users.service';
-
 import { mimeType } from '../../shared/mime-type.validator';
 
 @Component({
@@ -11,18 +11,18 @@ import { mimeType } from '../../shared/mime-type.validator';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
 
   isLoading = false;
   form: FormGroup;
   protected imagePreview: string;
   // tslint:disable-next-line:quotemark
   strongRegex: RegExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+  private authListenerSubs: Subscription;
 
-  constructor(public userService: UsersService, public route: ActivatedRoute) { }
+  constructor(public userService: UsersService) { }
 
   ngOnInit() {
-
     this.form = new FormGroup({
       name: new FormControl(null, {validators: [
         Validators.required,
@@ -66,6 +66,11 @@ export class SignupComponent implements OnInit {
         Validators.pattern("^[0-9a-zA-Z!.&:?@,\'\"() ]{100,}$")
       ]})
     });
+    this.authListenerSubs = this.userService.getAuthStatusListener().subscribe(status => {
+      if (!status) {
+        this.isLoading = false;
+      }
+    });
   }
 
   onImagePicker(event: Event) {
@@ -96,6 +101,10 @@ export class SignupComponent implements OnInit {
       content: this.form.value.content
     };
     this.userService.createUser(user);
+  }
+
+  ngOnDestroy() {
+    this.authListenerSubs.unsubscribe();
   }
 
 }

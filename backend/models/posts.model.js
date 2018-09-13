@@ -5,7 +5,8 @@ const postSchema = mongoose.Schema({
   email: {type: String, required: true},
   title: {type: String, required: true},
   content: {type: String, required: true},
-  imagePath: {type: String, required: true}
+  imagePath: {type: String, required: true},
+  creatorID: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
 module.exports = mongoose.model('Post', postSchema);

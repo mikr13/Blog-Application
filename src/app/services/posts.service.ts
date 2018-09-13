@@ -33,7 +33,8 @@ export class PostsService {
             id: post._id,
             title: post.title,
             content: post.content,
-            imagePath: post.imagePath
+            imagePath: post.imagePath,
+            creatorID: post.creatorID
           };
         }), postCount: postData.postCounts};
       }))
@@ -67,6 +68,13 @@ export class PostsService {
           verticalPosition: 'top'
         });
         this.router.navigate(['/']);
+    }, (error) => {
+      this.snackBar.open(error.error.message, 'Okay!', {
+        duration: 2500,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+      this.router.navigate(['/']);
     });
   }
 
@@ -87,18 +95,25 @@ export class PostsService {
         id: id,
         title: post.title,
         content: post.content,
-        imagePath: post.imagePath
+        imagePath: post.imagePath,
+        creatorID: null
       };
     }
     this.http.put<{message: string}>('http://localhost:3030/api/posts/' + id, postData)
       .subscribe((response) => {
-
         this.snackBar.open(response.message, 'Okay!', {
           duration: 2500,
           horizontalPosition: 'center',
           verticalPosition: 'top'
         });
         this.router.navigate(['/']);
+    }, (error) => {
+      this.snackBar.open(error.error.message, 'Okay!', {
+        duration: 2500,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+      this.router.navigate(['/']);
     });
   }
 
