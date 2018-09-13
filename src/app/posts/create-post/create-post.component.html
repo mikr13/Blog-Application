@@ -13,12 +13,12 @@
       </mat-expansion-panel-header>
 
       <mat-form-field>
-        <input matInput type="text" formControlName="name" placeholder="Name" readonly>
+        <input matInput type="text" formControlName="name" placeholder="Name" required readonly>
         <mat-error *ngIf="form.get('name').invalid">Please enter your name</mat-error>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput type="email" formControlName="email" placeholder="Email" readonly>
+        <input matInput type="email" formControlName="email" placeholder="Email" required readonly>
         <mat-error *ngIf="form.get('email').invalid">Please enter your valid email</mat-error>
       </mat-form-field>
     </mat-expansion-panel>
@@ -27,16 +27,16 @@
 
   <mat-card>
       <mat-form-field>
-        <input matInput type="text" formControlName="title" placeholder="Enter title here">
+        <input matInput type="text" formControlName="title" required placeholder="Enter title here">
         <mat-error *ngIf="form.get('title').invalid">Please enter the title of the post (3 characters minimum)</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <textarea matInput rows="3" formControlName="content" placeholder="Enter content here"></textarea>
+        <textarea matInput rows="3" formControlName="content" required placeholder="Enter content here"></textarea>
         <mat-error *ngIf="form.get('content').invalid">Please enter some content (300 characters minimum)</mat-error>
       </mat-form-field>
       <div class="image-div">
         <button mat-stroked-button type="button" (click)="filePicker.click()">Pick a image for the post</button>
-        <input type="file" #filePicker (change)="onImagePicker($event)">
+        <input type="file" required #filePicker (change)="onImagePicker($event)">
         <mat-error *ngIf="form.get('image').invalid && imagePreview !== '' && imagePreview">Not a valid image file!</mat-error>
       </div>
       <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">

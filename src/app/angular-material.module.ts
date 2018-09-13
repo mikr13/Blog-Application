@@ -16,12 +16,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
+    MatListModule,
     MatIconModule,
     MatExpansionModule,
-    MatSnackBarModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    MatListModule
-]
+    MatSnackBarModule
+  ]
 })
 export class AngularMaterialModule { }

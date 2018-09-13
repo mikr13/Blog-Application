@@ -99,15 +99,16 @@ exports.updatePost = (req, res, next) => {
         imagePathnew = url + '/uploads/' + req.file.filename;
     };
     const post = new Post({
+        _id: req.params.id,
         name: req.body.name,
         email: req.body.email,
         title: req.body.title,
         content: req.body.content,
-        imagePath: imagePathnew,
+        imagePath: imagePathnew || req.body.image,
         creatorID: req.userData.userID
     });
     Post.updateOne({_id: req.params.id, creatorID: req.userData.userID}, post).then(result => {
-        if(result.nModified > 0) {
+        if(result.n > 0) {
             res.status(200).json({
                 message: `Post ${post.name} updated successfully.`
             });
@@ -137,9 +138,11 @@ exports.deletePost =  (req, res, next) => {
         var promise = query.exec();
         promise.then((result) => {
             if(result.n > 0) {
-                fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\uploads\\${imagePath}`, (err) => {
-                    if (err) throw err;
-                });
+                if(imagePath) {
+                    fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\uploads\\${imagePath}`, (err) => {
+                        if (err) throw err;
+                    });
+                };
                 res.status(201).json({
                     message: `Post deleted successfully!`
                 });

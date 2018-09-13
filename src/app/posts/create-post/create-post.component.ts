@@ -126,6 +126,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
       return;
     }
     this.isLoading = true;
+    this.userData = this.userService.getUser();
     const post = {
       name: this.userData.name,
       email: this.userData.email,
@@ -143,5 +144,4 @@ export class CreatePostComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.authListenerSubs.unsubscribe();
   }
-
 }

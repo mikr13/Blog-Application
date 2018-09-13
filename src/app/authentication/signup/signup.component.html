@@ -64,7 +64,7 @@
 
       <mat-form-field>
         <textarea matInput rows="4" formControlName="content" placeholder="Describe yourself here" required></textarea>
-        <mat-error *ngIf="form.get('content').invalid">Please enter some cool description of yourself (100 characters minimum)</mat-error>
+        <mat-error *ngIf="form.get('content').invalid">Please enter some cool description of yourself (100 characters minimum) with no new lines</mat-error>
       </mat-form-field>
 
     </mat-expansion-panel>

@@ -97,7 +97,7 @@ export class PostsService {
         id: id,
         title: post.title,
         content: post.content,
-        imagePath: post.imagePath,
+        imagePath: post.image,
         creatorID: null
       };
     }

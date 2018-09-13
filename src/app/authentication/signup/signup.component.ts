@@ -63,7 +63,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       content: new FormControl(null, {validators: [
         Validators.required,
         // tslint:disable-next-line:quotemark
-        Validators.pattern("^[0-9a-zA-Z!.&:?@,\'\"() ]{100,}$")
+        Validators.pattern("^[0-9a-zA-Z!.&:?*@,\'\"()\u2028 ]{100,}$")
       ]})
     });
     this.authListenerSubs = this.userService.getAuthStatusListener().subscribe(status => {
