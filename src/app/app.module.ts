@@ -5,7 +5,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from '../app/app-routing/app-routing.module';
 import { AngularMaterialModule } from './angular-material.module';
 import { PostsModule } from './posts/posts.module';
-import { AuthenticationModule } from './authentication/authentication.module';
 
 import { AppComponent } from '../app/app.component';
 import { HeaderComponent } from '../app/header/header.component';
@@ -27,8 +26,7 @@ import { ErrorInterceptor } from '../app/interceptors/error-interceptor';
     HttpClientModule,
     AppRoutingModule,
     AngularMaterialModule,
-    PostsModule,
-    AuthenticationModule
+    PostsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true},

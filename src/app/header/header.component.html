@@ -18,10 +18,10 @@
 
     <ul>
       <li *ngIf='!userAuthenticated'>
-        <a routerLink="/login" mat-stroked-button routerLinkActive="mat-accent">Login</a>
+        <a routerLink="auth/login" mat-stroked-button routerLinkActive="mat-accent">Login</a>
       </li>
       <li *ngIf='!userAuthenticated'>
-        <a routerLink="/signup" mat-stroked-button routerLinkActive="mat-accent">Signup</a>
+        <a routerLink="auth/signup" mat-stroked-button routerLinkActive="mat-accent">Signup</a>
       </li>
       <!--li class="avatar" *ngIf='userAuthenticated'>
         <div class="avatar">
