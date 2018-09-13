@@ -13,19 +13,20 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { AppRoutingModule } from './app-routing/app-routing.module';
+import { AppRoutingModule } from '../app/app-routing/app-routing.module';
 
-import { AppComponent } from './app.component';
-import { CreatePostComponent } from './posts/create-post/create-post.component';
-import { HeaderComponent } from './header/header.component';
-import { ListPostsComponent } from './posts/list-posts/list-posts.component';
-import { LoginComponent } from './authentication/login/login.component';
-import { SignupComponent } from './authentication/signup/signup.component';
+import { AppComponent } from '../app/app.component';
+import { CreatePostComponent } from '../app/posts/create-post/create-post.component';
+import { HeaderComponent } from '../app/header/header.component';
+import { ListPostsComponent } from '../app/posts/list-posts/list-posts.component';
+import { LoginComponent } from '../app/authentication/login/login.component';
+import { SignupComponent } from '../app/authentication/signup/signup.component';
 
-import { PostsService } from './services/posts.service';
-import { UsersService } from './services/users.service';
+import { PostsService } from '../app/services/posts.service';
+import { UsersService } from '../app/services/users.service';
 
-import { AuthenticationInterceptor } from './interceptors/authentication-interceptor';
+import { AuthenticationInterceptor } from '../app/interceptors/authentication-interceptor';
+import { ErrorInterceptor } from '../app/interceptors/error-interceptor';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { AuthenticationInterceptor } from './interceptors/authentication-interce
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     PostsService,
     UsersService
   ],

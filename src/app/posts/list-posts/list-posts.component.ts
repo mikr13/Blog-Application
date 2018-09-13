@@ -32,6 +32,8 @@ export class ListPostsComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.postsService.totalPosts = postData.postCount;
         this.posts = postData.posts;
+      }, (error) => {
+        this.isLoading = false;
       });
     this.userAuthenticated = this.userService.getIsUserAuthenticated();
     this.authListenerSubs = this.userService.getAuthStatusListener().subscribe(status => {
@@ -62,6 +64,8 @@ export class ListPostsComponent implements OnInit, OnDestroy {
         horizontalPosition: 'center',
         verticalPosition: 'top'
       });
+    }, (error) => {
+      this.isLoading = false;
     });
   }
 

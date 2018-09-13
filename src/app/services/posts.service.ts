@@ -20,7 +20,7 @@ export class PostsService {
   currentPage = 1;
   pageSizeOptions: number[] = [1, 2, 5, 10];
 
-  constructor(private http: HttpClient, public snackBar: MatSnackBar, private router: Router) { }
+  constructor(private http: HttpClient, private snackBar: MatSnackBar, private router: Router) { }
 
   getPosts(postsPerPage: number, currentPage: number) {
     const queryParams = `?ps=${postsPerPage}&p=${currentPage}`;
@@ -69,11 +69,13 @@ export class PostsService {
         });
         this.router.navigate(['/']);
     }, (error) => {
+      /* Caught by error interceptor
       this.snackBar.open(error.error.message, 'Okay!', {
         duration: 2500,
         horizontalPosition: 'center',
         verticalPosition: 'top'
       });
+      */
       this.router.navigate(['/']);
     });
   }
@@ -108,11 +110,13 @@ export class PostsService {
         });
         this.router.navigate(['/']);
     }, (error) => {
+      /*
       this.snackBar.open(error.error.message, 'Okay!', {
         duration: 2500,
         horizontalPosition: 'center',
         verticalPosition: 'top'
       });
+      */
       this.router.navigate(['/']);
     });
   }

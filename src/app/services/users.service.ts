@@ -22,7 +22,7 @@ export class UsersService {
   private tokenTimer: any;
   private userID: string;
 
-  constructor(private http: HttpClient, public snackBar: MatSnackBar, private router: Router, private _compiler: Compiler) { }
+  constructor(private http: HttpClient, private snackBar: MatSnackBar, private router: Router, private _compiler: Compiler) { }
 
   getToken() {
     if (this.token) {
@@ -70,12 +70,16 @@ export class UsersService {
           this.router.navigate(['/login']);
         },
         (error) => {
+          /* caught by error interceptor
           this.snackBar.open(error.error.message || error.error.error, 'Okay!', {
             duration: 2500,
             horizontalPosition: 'center',
             verticalPosition: 'top'
           });
-          this.authStatusListener.next(false);
+          */
+          if(error) {
+            this.authStatusListener.next(false);
+          }
         }
       );
   }
@@ -108,12 +112,16 @@ export class UsersService {
         }
         },
         (error) => {
+          /* caught by error interceptor
           this.snackBar.open(error.error.message, 'Okay!', {
             duration: 2500,
             horizontalPosition: 'center',
             verticalPosition: 'top'
           });
-          this.authStatusListener.next(false);
+          */
+          if(error) {
+            this.authStatusListener.next(false);
+          }
         }
       );
   }

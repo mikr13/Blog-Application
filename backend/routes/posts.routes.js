@@ -50,6 +50,12 @@ router.get('/', (req, res, next) => {
             posts: fetchedPosts,
             postCounts: count
         });
+    }).catch((error) => {
+        console.log(error);
+        res.status(500).json({
+            message: `Couldn't fetch post due to some error at our side, try again later!`,
+            error: error
+        })
     });
 });
 
@@ -64,6 +70,12 @@ router.get('/:id', (req, res, next) => {
         } else {
             res.status(404).json({message: `Post not found`});
         }
+    }).catch(error => {
+        console.log(error);
+        res.status(500).json({
+            message: `Cannot get the post with id: ${query}, a unknown error on our side`,
+            error: error
+        })
     })
 });
 
@@ -85,6 +97,16 @@ router.post('/', checkAuth, upload.single('image'), (req, res, next) => {
                 id: result._id
             }
         });
+    })
+    .catch(error => {
+        console.log(error);
+        fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\uploads\\${req.file.filename}`, (err) => {
+            if (err) throw err;
+        });
+        res.status(500).json({
+            message: `Some error occured while creating post, please check back later.`,
+            error: error
+        });
     });
 });
 
@@ -97,9 +119,8 @@ router.put('/:id', checkAuth, upload.single('image'), (req, res, next) => {
                 return s.substr(prefix.length);
             }
             imagePath = removePrefix('http:/localhost:3030/uploads//',imagePath);
-            fs.unlink('F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\uploads\\' + imagePath, (err) => {
+            fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\uploads\\${imagePath}`, (err) => {
                 if (err) throw err;
-                console.log(imagePath + ' was deleted');
             });
         });
         const url = req.protocol + '://' + req.get('host');
@@ -123,6 +144,12 @@ router.put('/:id', checkAuth, upload.single('image'), (req, res, next) => {
                 message: `Not authorized to update.`
             });
         }   
+    }).catch(error => {
+        console.log(error);
+        res.status(500).json({
+            message: `Some error occured while updating post, please check back later.`,
+            error: error
+        });
     });
 });
 
@@ -138,9 +165,8 @@ router.delete('/:id', checkAuth, (req, res, next) => {
         var promise = query.exec();
         promise.then((result) => {
             if(result.n > 0) {
-                fs.unlink('F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\uploads\\' + imagePath, (err) => {
+                fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\uploads\\${imagePath}`, (err) => {
                     if (err) throw err;
-                    console.log(`${imagePath} deleted.`);
                 });
                 res.status(201).json({
                     message: `Post deleted successfully!`
@@ -150,6 +176,12 @@ router.delete('/:id', checkAuth, (req, res, next) => {
                     message: `Not authorized to update.`
                 })
             }
+        }).catch((error) => {
+            console.log(error);
+            res.status(500).json({
+                message: `Some error occured while deleting post, please check back later.`,
+                error: error
+            });
         });
     });
 });

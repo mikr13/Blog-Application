@@ -18,7 +18,7 @@ const MIME_TYPE_MAP = {
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const isValid = MIME_TYPE_MAP[file.mimetype];
-        let error = new Error('Invalid mime type');
+        let error = new Error(`Invalid mime type`);
         if(isValid) {
             error = null;
         }
@@ -52,7 +52,7 @@ schema
 
 router.post('/signup', upload.single('image'), (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
-    const imagePath = url + '/users-image/' + req.file.filename
+    const imagePath = url + '/users-image/' + req.file.filename;
     if(schema.validate(req.body.password)) {
         bcrypt.hash(req.body.password, saltRounds).then((hash) => {
             const user = new User({
@@ -67,25 +67,33 @@ router.post('/signup', upload.single('image'), (req, res, next) => {
             });
             user.save().then((result) => {
                 return res.status(201).json({
-                    message: 'User registered successfully, sign in to continue.',
+                    message: `User registered successfully, sign in to continue.`,
                     user: user
                 });
-            }).catch(err => {
+            }).catch(error => {
+                fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\users-image\\${req.file.filename}`, (err) => {
+                    if (err) throw err;
+                });
                 return res.status(500).json({
-                    error: err
+                    message: `User already registered with this ${req.body.email}, use another email or if it's your then sign in to continue`,
+                    error: error
                 });
             });
-        }).catch(err => {
+        }).catch(error => {
+            fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\users-image\\${req.file.filename}`, (err) => {
+                if (err) throw err;
+            });
             return res.status(503).json({
-                error: err
+                message: `Some error occured while registering user, please check back later.`,
+                error: error
             });
         });
     } else {
-        fs.unlink('F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\users-image\\' + imagePath, (err) => {
+        fs.unlink(`F:\\MEAN\\Project with Angular 2+\\Project1\\backend\\users-image\\${req.file.filename}`, (err) => {
             if (err) throw err;
         });
         return res.status(406).json({
-            message: "Password must have 8 min characters containing atleast 1 numeric, 1 uppercase character, 1 lowercase character and 1 special character"
+            message: `Password must have 8 min characters containing atleast 1 numeric, 1 uppercase character, 1 lowercase character and 1 special character`
         })
     }
 });
@@ -95,7 +103,7 @@ router.post('/login', (req, res, next) => {
     User.findOne({ email: req.body.email }).then(user => {
         if(!user) {
             return res.status(401).json({
-                message: "Authentication failed. User doesn't exists!"
+                message: `Authentication failed. User doesn't exists!`
             });
         }
         userData = user;
@@ -103,7 +111,7 @@ router.post('/login', (req, res, next) => {
     }).then(result => {
         if(!result) {
             return res.status(401).json({
-                message: "Authentication failed. Check email or password or their combination"
+                message: `Authentication failed. Check email or password or their combination`
             });
         }
         const token = jwt.sign({email: userData.email, userID: userData._id, phone: userData.phone}, string_sec, { expiresIn: '3h' });
@@ -111,10 +119,11 @@ router.post('/login', (req, res, next) => {
             user: {name: userData.name, email: userData.email, userID: userData._id, imagePath: userData.imagePath},
             token: token,
             expiresIn: 10800,
-            message: "Logged in successfully."
+            message: `Logged in successfully.`
         })
     }).catch(err => {
         return res.status(503).json({
+            message: `Some error occured while registering user, please check back later.`,
             error: err
         });
     });
