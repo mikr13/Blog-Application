@@ -7,6 +7,9 @@ import { Subject } from 'rxjs';
 
 import { User } from '../shared/users.model';
 
+import { environment } from '../../environments/environment';
+const BACKEND_URL = `${environment.apiURL}/users`;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,7 +63,7 @@ export class UsersService {
     userData.append('tagline', user.tagline);
     userData.append('content', user.content);
     userData.append('image', user.image, user.name);
-    return this.http.post<{message: string, user: User}>('http://localhost:3030/api/users/signup', userData)
+    return this.http.post<{message: string, user: User}>(`${BACKEND_URL}/signup`, userData)
       .subscribe((responseData) => {
           this.snackBar.open(responseData.message, 'Okay!', {
             duration: 2500,
@@ -86,7 +89,7 @@ export class UsersService {
 
   login(email: string, password: string) {
     const loginData: {email: string, password: string} = {email: email, password: password};
-    this.http.post<{ user: any, message: string, token: string, expiresIn: number}>('http://localhost:3030/api/users/login', loginData)
+    this.http.post<{ user: any, message: string, token: string, expiresIn: number}>(`${BACKEND_URL}/login`, loginData)
       .subscribe((responseData) => {
         if (responseData) {
           const token = responseData.token;
