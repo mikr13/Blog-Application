@@ -15,6 +15,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoading = false;
   private authListenerSubs: Subscription;
 
+  // tslint:disable-next-line:quotemark
+  passwordRegex: RegExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+  // tslint:disable-next-line:quotemark
+  emailRegex: RegExp = new RegExp("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+
   constructor(public userService: UsersService) { }
 
   ngOnInit() {
