@@ -28,7 +28,7 @@ export class PostsService {
   getPosts(postsPerPage: number, currentPage: number) {
     const queryParams = `?ps=${postsPerPage}&p=${currentPage}`;
     this.http.get<{message: string, posts: any, postCounts: number}>(`${BACKEND_URL}${queryParams}`)
-      .pipe(map((postData) => {
+      .pipe(map((postData) => { // pipe used to link operators like map, filter, concat together
         return {posts: postData.posts.map((post) => {
           return {
             name: post.name,

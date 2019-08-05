@@ -29,7 +29,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
   constructor(public postService: PostsService, public route: ActivatedRoute, private userService: UsersService) { }
 
   ngOnInit() {
-    
+
     this.authListenerSubs = this.userService.getAuthStatusListener().subscribe(status => {
         this.isLoading = false;
     });
